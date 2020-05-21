@@ -1,0 +1,5 @@
+
+/* ฒÝดิ */
+public class Grass {
+
+}

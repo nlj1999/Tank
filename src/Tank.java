@@ -1,0 +1,355 @@
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.awt.BasicStroke;
+import java.util.List;
+import java.util.Random;
+import java.lang.Math;
+
+/* 坦克 */
+public class Tank {
+	/* 当前位置 */
+	public int x, y;
+	/* 上次位置 */
+	private int last_x, last_y;
+	/* 大小 */
+	public static final int width = 30;
+	public static final int height = 30;
+	/* 移动速度 */
+	public int speed_x = 5;
+	public int speed_y = 5;
+	/* 坦克颜色 */
+	private Color color;
+	/* 四方向按键 */
+	private boolean L=false, U=false, R=false, D=false;
+	/* 合成八方向 */
+	enum Direction {L, LU, U, RU, R, RD, D, LD, STOP};
+	/* 坦克方向 */
+	private Direction dir = Direction.STOP;
+	/* 炮筒方向 */
+	private Direction p_dir = Direction.D;
+	
+	private boolean enemy;
+	private boolean live = true;
+	private static Random r = new Random();
+	private static int step = r.nextInt(10)+5;
+	private int life = 100;
+	/* 血条 */
+	private BloodBar bb = new BloodBar();
+	
+	private TankClient tc;
+	
+	public Tank(int x, int y, boolean enemy, Color color) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.color = color;
+		this.enemy = enemy;
+	}
+	
+	public Tank(int x, int y, boolean enemy, Color color, Direction dir, TankClient tc) {
+		this(x, y, enemy, color);
+		this.dir = dir;
+		this.tc = tc;
+	}
+	
+	public int get_life() {
+		return life;
+	}
+	
+	public void set_life(int Life) {
+		this.life = Life;
+	}
+	
+	public boolean is_enemy() {
+		return enemy;
+	}
+	
+	public void set_enemy(boolean enemy) {
+		this.enemy = enemy;
+	}
+	
+	public boolean is_live() {
+		return live;
+	}
+	
+	public void set_live(boolean live) {
+		this.live = live;
+	}
+	
+	/* 获取中点 */
+	public int get_center_x() {
+		return x+width/2;
+	}
+	
+	public int get_center_y() {
+		return y+height/2;
+	}
+	
+	/* 画坦克 */
+	public void draw(Graphics g) {
+		if(!live) {
+			if(enemy) {
+				tc.tanks.remove(this);
+			}
+			return;
+		}
+		/* 暂存原来画笔的颜色 */
+		Color c = g.getColor();
+		/* 暂时是椭圆 */
+		g.setColor(color);
+		g.fillOval(x, y, width, height);
+		/* 画血条 */
+		if(!enemy){
+			bb.draw(g);
+		}
+		
+		g.setColor(c);
+		
+		/* 画炮筒 */
+		Graphics2D g2 = (Graphics2D)g;
+		g2.setColor(Color.black);
+		g2.setStroke(new BasicStroke(3.0f));
+		int tank_center_x = get_center_x();
+		int tank_center_y = get_center_y();
+		int p_length = Tank.width;
+		int p_length_sqrt = (int)(Double.valueOf(p_length)*Math.sqrt(0.5));
+		switch(p_dir) {
+		case L:
+			g2.drawLine(tank_center_x, tank_center_y, tank_center_x-p_length, tank_center_y);
+			break;
+		case LU:
+			g2.drawLine(tank_center_x, tank_center_y, tank_center_x-p_length_sqrt, tank_center_y-p_length_sqrt);
+			break;
+		case U:
+			g2.drawLine(tank_center_x, tank_center_y, tank_center_x, tank_center_y-p_length);
+			break;
+		case RU:
+			g2.drawLine(tank_center_x, tank_center_y, tank_center_x+p_length_sqrt, tank_center_y-p_length_sqrt);
+			break;
+		case R:
+			g2.drawLine(tank_center_x, tank_center_y, tank_center_x+p_length, tank_center_y);
+			break;
+		case RD:
+			g2.drawLine(tank_center_x, tank_center_y, tank_center_x+p_length_sqrt, tank_center_y+p_length_sqrt);
+			break;
+		case D:
+			g2.drawLine(tank_center_x, tank_center_y, tank_center_x, tank_center_y+p_length);
+			break;
+		case LD:
+			g2.drawLine(tank_center_x, tank_center_y, tank_center_x-p_length_sqrt, tank_center_y+p_length_sqrt);
+			break;
+		/* 一般不会是STOP */
+		case STOP:
+			System.out.println("p_dir error");
+			g2.drawLine(tank_center_x, tank_center_y, tank_center_x, tank_center_y);
+			break;
+		}
+		
+		move();
+	}
+	
+	/* 按键事件 */
+	public void KeyPressed(KeyEvent e) {
+		int key = e.getKeyCode();
+		switch(key) {
+		case KeyEvent.VK_UP:
+			U=true;
+			break;
+		case KeyEvent.VK_DOWN:
+			D=true;
+			break;
+		case KeyEvent.VK_LEFT:
+			L=true;
+			break;
+		case KeyEvent.VK_RIGHT:
+			R=true;
+			break;
+		}
+		locateDirection();
+	}
+	
+	public void keyReleased(KeyEvent e) {
+		int key = e.getKeyCode();
+		switch(key) {
+		case KeyEvent.VK_UP:
+			U=false;
+			break;
+		case KeyEvent.VK_DOWN:
+			D=false;
+			break;
+		case KeyEvent.VK_LEFT:
+			L=false;
+			break;
+		case KeyEvent.VK_RIGHT:
+			R=false;
+			break;
+		case KeyEvent.VK_SPACE:
+			if(live)
+				fire();
+			break;
+		case KeyEvent.VK_R:
+			if(!this.live) {
+				this.live=true;
+				this.set_life(100);
+			}
+			break;
+		}
+		locateDirection();
+	}
+	
+	/* 方向合成 */
+	void locateDirection() {
+		if(L&&!R&&!U&&!D) dir = Direction.L;
+		else if(!L&&R&&!U&&!D) dir = Direction.R;
+		else if(!L&&!R&&U&&!D) dir = Direction.U;
+		else if(!L&&!R&&!U&&D) dir = Direction.D;
+		else if(L&&!R&&U&&!D) dir = Direction.LU;
+		else if(L&&!R&&!U&&D) dir = Direction.LD;
+		else if(!L&&R&&U&&!D) dir = Direction.RU;
+		else if(!L&&R&&!U&&D) dir = Direction.RD;
+		else dir = Direction.STOP;
+	}
+	
+	/* 移动 */
+	void move() {
+		last_x = x;
+		last_y = y;
+		switch(dir) {
+		case L:
+			x-=speed_x;
+			break;
+		case LU:
+			x-=speed_x;
+			y-=speed_y;
+			break;
+		case U:
+			y-=speed_y;
+			break;
+		case RU:
+			x+=speed_x;
+			y-=speed_y;
+			break;
+		case R:
+			x+=speed_x;
+			break;
+		case RD:
+			x+=speed_x;
+			y+=speed_y;
+			break;
+		case D:
+			y+=speed_y;
+			break;
+		case LD:
+			x-=speed_x;
+			y+=speed_y;
+			break;
+		case STOP:
+			break;
+		}
+		
+		/* 出界判定 */
+		if (x < 5) x = 5;
+		if (y < 25) y = 25;
+		if (x+width > tc.SCREEN_WIDTH-5)
+			x = tc.SCREEN_WIDTH-5;
+		if (y+width > tc.SCREEN_HEIGHT-5)
+			y = tc.SCREEN_HEIGHT-5;
+		
+		/* 炮筒方向改变 */
+		if(dir != Direction.STOP)
+			p_dir = dir;
+		
+		
+		/* 敌人随机移动 */
+		if(enemy) {
+			Direction[] dirs = Direction.values();
+			if(step == 0) {
+				step = r.nextInt(10)+5;
+				int randomNumber = r.nextInt(dirs.length);
+				dir = dirs[randomNumber];
+			}
+			step--;
+			if(r.nextInt(33)>30)
+				this.fire();
+		}
+		
+	}
+	
+	/* 开火 */
+	public void fire() {
+		int x = this.x + width/2 - Missile.width/2;
+		int y = this.y + height/2 - Missile.height/2;
+		tc.missiles.add(new Missile(p_dir, color, x, y, enemy, tc));
+	}
+	
+	public Rectangle get_rect() {
+		return new Rectangle(x, y, width, height);
+	}
+	
+	private void stay() {
+		x = last_x;
+		y = last_y;
+	}
+	
+	/* 撞墙 */
+	public boolean hitWall(Wall w) {
+		if(this.live&&this.get_rect().intersects(w.get_rect())) {
+			this.stay();
+			return true;
+		}
+		return false;
+	}
+	
+	/* 坦克相撞 */
+	public boolean hitTanks(List<Tank> tanks) {
+		for(int i = 0; i < tanks.size(); i++) {
+			Tank t = tanks.get(i);
+			if(this != t) {
+				if(this.live&&t.is_live()&&this.get_rect().intersects(t.get_rect())){
+					this.stay();
+					t.stay();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/* 返回Missile对象的开火 */
+	public Missile fire(Direction dir) {
+		if(!live)
+			return null;
+		int x = this.x + width/2 - Missile.width/2;
+		int y = this.y + height/2 - Missile.height/2;
+		Missile m = new Missile(dir, color, x, y, enemy, tc);
+		tc.missiles.add(m);
+		return m;
+	}
+	
+	/* 血条 */
+	private class BloodBar{
+		public void draw(Graphics g) {
+			Color c = g.getColor();
+			g.setColor(Color.red);
+			g.drawRect(x, y-20, width, 10);
+			int w = width*life/100;
+			g.fillRect(x, y-20, w, 10);
+			g.setColor(c);
+		}
+	}
+	
+	/* 吃血包回血 */
+	public boolean recovery(Recovery r) {
+		if(this.live&&r.is_live()&&this.get_rect().intersects(r.get_rect())){
+			this.set_life(100);
+			r.set_live(false);
+			return true;
+		}
+		return false;
+	}
+	
+}
