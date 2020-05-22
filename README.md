@@ -24,3 +24,16 @@
 
 ### 多人对战
 单机/联网
+
+
+## 程序框架
+
+### GameFrame
+Panel容器，用于绘制游戏界面，可以在游戏/编辑器间切换
+
+### Map, MapEditer, MapProducer
+MapProducer用于存储地图初始化所需要的数据，调用produce方法可以返回生成的初始化地图。
+
+Map实例则是当前画面中的所有要素(坦克，场景，子弹，渲染等)的集合，GAMEFRAME通过调用Map的draw方法来呈现游戏画面。
+
+MapEditer通过编辑产生MapProducer，同时可以将地图信息记录在文件中。
