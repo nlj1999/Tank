@@ -40,7 +40,7 @@ public class Tank {
 	/* 血条 */
 	private BloodBar bb = new BloodBar();
 	
-	private TankClient tc;
+	private Map map;
 	
 	public Tank(int x, int y, boolean enemy, Color color) {
 		super();
@@ -50,10 +50,10 @@ public class Tank {
 		this.enemy = enemy;
 	}
 	
-	public Tank(int x, int y, boolean enemy, Color color, Direction dir, TankClient tc) {
+	public Tank(int x, int y, boolean enemy, Color color, Direction dir, Map map) {
 		this(x, y, enemy, color);
 		this.dir = dir;
-		this.tc = tc;
+		this.map = map;
 	}
 	
 	public int get_life() {
@@ -93,7 +93,7 @@ public class Tank {
 	public void draw(Graphics g) {
 		if(!live) {
 			if(enemy) {
-				tc.tanks.remove(this);
+				map.tanks.remove(this);
 			}
 			return;
 		}
@@ -149,7 +149,6 @@ public class Tank {
 			break;
 		}
 		
-		move();
 	}
 	
 	/* 按键事件 */
@@ -254,10 +253,10 @@ public class Tank {
 		/* 出界判定 */
 		if (x < 5) x = 5;
 		if (y < 25) y = 25;
-		if (x+width > tc.SCREEN_WIDTH-5)
-			x = tc.SCREEN_WIDTH-5;
-		if (y+width > tc.SCREEN_HEIGHT-5)
-			y = tc.SCREEN_HEIGHT-5;
+		if (x+width > TankClient.SCREEN_WIDTH-5)
+			x = TankClient.SCREEN_WIDTH-5;
+		if (y+width > TankClient.SCREEN_HEIGHT-5)
+			y = TankClient.SCREEN_HEIGHT-5;
 		
 		/* 炮筒方向改变 */
 		if(dir != Direction.STOP)
@@ -283,7 +282,7 @@ public class Tank {
 	public void fire() {
 		int x = this.x + width/2 - Missile.width/2;
 		int y = this.y + height/2 - Missile.height/2;
-		tc.missiles.add(new Missile(p_dir, color, x, y, enemy, tc));
+		map.missiles.add(new Missile(p_dir, color, x, y, enemy, map));
 	}
 	
 	public Rectangle get_rect() {
@@ -325,8 +324,8 @@ public class Tank {
 			return null;
 		int x = this.x + width/2 - Missile.width/2;
 		int y = this.y + height/2 - Missile.height/2;
-		Missile m = new Missile(dir, color, x, y, enemy, tc);
-		tc.missiles.add(m);
+		Missile m = new Missile(dir, color, x, y, enemy, map);
+		map.missiles.add(m);
 		return m;
 	}
 	

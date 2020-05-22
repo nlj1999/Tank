@@ -15,7 +15,7 @@ public class Missile {
 	private boolean live = true;
 	private boolean enemy;
 	
-	private TankClient tc;
+	private Map map;
 	
 	public Missile(Tank.Direction dir, Color c, int x, int y) {
 		super();
@@ -25,10 +25,10 @@ public class Missile {
 		this.c = c;
 	}
 	
-	public Missile(Tank.Direction dir, Color c, int x, int y, boolean enemy, TankClient tc) {
+	public Missile(Tank.Direction dir, Color c, int x, int y, boolean enemy, Map map) {
 		this(dir, c, x, y);
 		this.enemy = enemy;
-		this.tc = tc;
+		this.map = map;
 	}
 	
 	public boolean is_live() {
@@ -42,7 +42,7 @@ public class Missile {
 	/* »­×Óµ¯ */
 	public void draw(Graphics g) {
 		if(!live) {
-			tc.missiles.remove(this);
+			map.missiles.remove(this);
 			return;
 		}
 		Color d = g.getColor();
@@ -51,7 +51,6 @@ public class Missile {
 		g.fillOval(x, y, width, height);
 		
 		g.setColor(d);
-		move();
 	}
 	
 	/* ×Óµ¯ÒÆ¶¯ */
@@ -112,7 +111,7 @@ public class Missile {
 					t.set_live(false);
 			}
 			this.live = false;
-			tc.explode.add(new Explode(t.get_center_x(), t.get_center_y(), tc));
+			map.explode.add(new Explode(t.get_center_x(), t.get_center_y(), map));
 			return true;
 			
 		}

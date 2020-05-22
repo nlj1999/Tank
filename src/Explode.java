@@ -8,12 +8,12 @@ public class Explode {
 	int step = 0;
 	int [] diameter = new int[] {4, 7, 12, 18, 26, 32, 49, 56, 65, 77, 80, 50, 40, 30, 14, 6};
 	
-	private TankClient tc;
-	public Explode(int x, int y, TankClient tc) {
+	private Map map;
+	public Explode(int x, int y, Map map) {
 		super();
 		this.x = x;
 		this.y = y;
-		this.tc = tc;
+		this.map = map;
 	}
 	
 	public void draw(Graphics g) {
@@ -21,7 +21,7 @@ public class Explode {
 		if(step == diameter.length) {
 			live = false;
 			step = 0;
-			tc.explode.remove(this);
+			map.explode.remove(this);
 			return;
 		}
 		Color c = g.getColor();

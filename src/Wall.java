@@ -4,15 +4,13 @@ import java.awt.Rectangle;
 /* ǽ */
 public class Wall {
 	int x, y, w, h;
-	private TankClient tc;
 	
-	public Wall(int x, int y, int w, int h, TankClient tc) {
+	public Wall(int x, int y, int w, int h) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.tc = tc;
 	}
 	
 	public Rectangle get_rect() {
