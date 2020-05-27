@@ -3,8 +3,8 @@ import java.util.*;
 
 public class MapProducer {
 	/* 出生点坐标 */
-	public int spawn_x;
-	public int spawn_y;
+	public int spawn_x=-1;
+	public int spawn_y=-1;
 	
 	/* 墙 */
 	List<Wall> walls = new ArrayList<Wall>();
@@ -26,7 +26,9 @@ public class MapProducer {
 		for(int i = 0; i < recovers_x.size(); i++) {
 			result.add_recovery(recovers_x.get(i), recovers_y.get(i));
 		}
-		result.add_spawn(spawn_x, spawn_y);
+		if(spawn_x > 0) {
+			result.add_spawn(spawn_x, spawn_y);
+		}
 		return result;
 	}
 	

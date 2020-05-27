@@ -129,8 +129,6 @@ public class Map {
 		for(int i = 0; i < explode.size(); i++) {
 			explode.get(i).draw(g);
 		}
-		g.drawString("移动: 方向键", 650, 20);
-		g.drawString("开火: 空格键", 650, 40);
 		
 		
 	}

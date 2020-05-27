@@ -1,10 +1,6 @@
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.BasicStroke;
+import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Random;
 import java.lang.Math;
@@ -18,6 +14,8 @@ public class Tank {
 	/* ´óÐ¡ */
 	public static final int width = 30;
 	public static final int height = 30;
+	/* ¼ÝÊ»ÊÒ°ë¾¶ */
+	public static final int inner_r = 10;
 	/* ÒÆ¶¯ËÙ¶È */
 	public int speed_x = 5;
 	public int speed_y = 5;
@@ -97,26 +95,42 @@ public class Tank {
 			}
 			return;
 		}
-		/* ÔÝ´æÔ­À´»­±ÊµÄÑÕÉ« */
-		Color c = g.getColor();
-		/* ÔÝÊ±ÊÇÍÖÔ² */
-		g.setColor(color);
-		g.fillOval(x, y, width, height);
+        Rectangle rect = new Rectangle(x, y, width, height);
+        Graphics2D g2 = (Graphics2D)g;
+		g2.setColor(Color.green);
+        switch(p_dir) {
+        case LU:
+        case RU:
+        case LD:
+        case RD:
+        	AffineTransform transform = new AffineTransform();
+            transform.rotate(Math.toRadians(45), rect.getX() + rect.width / 2, rect.getY() + rect.height / 2);
+            Shape transformed = transform.createTransformedShape(rect);
+            g2.fill(transformed);
+            break;
+        default:
+        	g2.fill(rect);
+        }
+        
+		
 		/* »­ÑªÌõ */
 		if(!enemy){
 			bb.draw(g);
 		}
 		
-		g.setColor(c);
-		
 		/* »­ÅÚÍ² */
-		Graphics2D g2 = (Graphics2D)g;
-		g2.setColor(Color.black);
-		g2.setStroke(new BasicStroke(3.0f));
 		int tank_center_x = get_center_x();
 		int tank_center_y = get_center_y();
 		int p_length = Tank.width;
 		int p_length_sqrt = (int)(Double.valueOf(p_length)*Math.sqrt(0.5));
+		
+		/* ¼ÝÊ»ÊÒ£¬Ô²ÐÎ*/
+		g.setColor(color);
+		g.fillOval(tank_center_x - inner_r, tank_center_y - inner_r, inner_r*2, inner_r*2);
+		
+		g2.setColor(Color.black);
+		g2.setStroke(new BasicStroke(3.0f));
+		
 		switch(p_dir) {
 		case L:
 			g2.drawLine(tank_center_x, tank_center_y, tank_center_x-p_length, tank_center_y);

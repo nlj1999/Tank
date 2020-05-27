@@ -6,6 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ public class GameFrame extends JPanel{
 		this.setFocusable(true);
 		new Thread(new PaintThread()).start();
 		this.addKeyListener(new KeyMoniton());
+		this.addMouseListener(new MouseMoniton());
+		this.addMouseMotionListener(new MouseMotionMoniton());
 	}
 	
 	@Override
@@ -55,6 +58,9 @@ public class GameFrame extends JPanel{
 			map.process();
 			/* 画图 */
 			map.draw(g);
+			/* 提示信息 */
+			g.drawString("移动: 方向键", 650, 20);
+			g.drawString("开火: 空格键", 650, 40);
 		}
 		/* 编辑模式 */
 		else if(game_state == State.EDIT) {
@@ -82,9 +88,7 @@ public class GameFrame extends JPanel{
 		@Override
 		public void keyPressed(KeyEvent e) {
 			super.keyPressed(e);
-			System.out.println(myTank.x);
 			if(myTank != null) {
-				System.out.println("!");
 				myTank.KeyPressed(e);
 			}
 		}
@@ -103,6 +107,7 @@ public class GameFrame extends JPanel{
     private class MouseMoniton extends MouseAdapter{
     	@Override
     	public void mousePressed(MouseEvent e){
+    		//System.out.println("!");
     		if(game_state == State.EDIT) {
     			editer.mousePressed(e);
     		}
@@ -113,6 +118,21 @@ public class GameFrame extends JPanel{
     			editer.mouseClicked(e);
     		}   
     	} 
+    	@Override
+    	public void mouseReleased(MouseEvent e){
+    		if(game_state == State.EDIT) {
+    			editer.mouseReleased(e);
+    		}   
+    	}
+    }
+    
+    private class MouseMotionMoniton extends MouseMotionAdapter{
+    	@Override
+    	public void mouseDragged(MouseEvent e){
+    		if(game_state == State.EDIT) {
+    			editer.mouseDragged(e);
+    		}   
+    	}
     }
 	
 	public void set_myTank(Tank myTank) {
