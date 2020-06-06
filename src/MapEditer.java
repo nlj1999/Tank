@@ -132,6 +132,7 @@ public class MapEditer {
 		EnemyTankButton enemytankButton = new EnemyTankButton();
 		WallButton wallButton = new WallButton();
 		RecoveryButton recoveryButton = new RecoveryButton();
+		RemoveButton removeButton = new RemoveButton();
 		ActiveButton activeButton = new ActiveButton(gf);
 		ClearButton clearButton = new ClearButton();
 		SaveButton saveButton = new SaveButton();
@@ -139,6 +140,7 @@ public class MapEditer {
 		gf.add(enemytankButton);
 		gf.add(wallButton);
 		gf.add(recoveryButton);
+		gf.add(removeButton);
 		gf.add(activeButton);
 		gf.add(clearButton);
 		gf.add(saveButton);
@@ -201,6 +203,22 @@ public class MapEditer {
 	        		get_choice();
 	        		for(int i = 0; i < grid_x.size(); i++) {
 	        			gen.grid[grid_x.get(i)/30][grid_y.get(i)/30] = 3;
+	        		}
+	        		mapUpdate();
+	        	}
+	        });
+		}
+	}
+	
+	public class RemoveButton extends MapItemButton{
+		RemoveButton(){
+			this.setText("Çå³ý");
+			this.setBounds(650, 300, 90, 40);
+			this.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		get_choice();
+	        		for(int i = 0; i < grid_x.size(); i++) {
+	        			gen.grid[grid_x.get(i)/30][grid_y.get(i)/30] = 0;
 	        		}
 	        		mapUpdate();
 	        	}

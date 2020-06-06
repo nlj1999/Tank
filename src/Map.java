@@ -138,4 +138,8 @@ public class Map {
 		return myTank != null && myTank.is_live() && tanks.size() == 1;
 	}
 	
+	public boolean lose() {
+		return !myTank.is_live();
+	}
+	
 }

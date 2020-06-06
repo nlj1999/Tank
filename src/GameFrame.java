@@ -67,6 +67,10 @@ public class GameFrame extends JPanel{
 				g.setFont(new Font("Times New Roman", Font.BOLD, 100));
 				g.drawString("YOU WIN", 80, 300);
 			}
+			else if(map.lose()) {
+				g.setFont(new Font("Times New Roman", Font.BOLD, 100));
+				g.drawString("YOU LOSE", 40, 300);
+			}
 
 		}
 		/* �༭ģʽ */
