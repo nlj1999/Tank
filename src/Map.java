@@ -131,14 +131,11 @@ public class Map {
 		for(int i = 0; i < explode.size(); i++) {
 			explode.get(i).draw(g);
 		}
-		if(myTank != null && myTank.is_live() && tanks.size() == 1) {
-			win(g);
-		}
 		
 	}
 	
-	public void win(Graphics g) {
-		g.setFont(new Font("Times New Roman", Font.BOLD, 100));
-		g.drawString("YOU WIN", 80, 300);
+	public boolean win() {
+		return myTank != null && myTank.is_live() && tanks.size() == 1;
 	}
+	
 }

@@ -62,6 +62,12 @@ public class GameFrame extends JPanel{
 			g.setFont(new Font("楷体", Font.BOLD, 20));
 			g.drawString("移动: 方向键", 620, 20);
 			g.drawString("开火: 空格键", 620, 60);
+			/* 胜利 */
+			if(map.win()) {
+				g.setFont(new Font("Times New Roman", Font.BOLD, 100));
+				g.drawString("YOU WIN", 80, 300);
+			}
+
 		}
 		/* 编辑模式 */
 		else if(game_state == State.EDIT) {
