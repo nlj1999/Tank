@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -38,6 +39,7 @@ public class GameFrame extends JPanel{
 		//this.setLocation(100, 200);
 		//this.setSize(PANEL_WIDTH,PANEL_HEIGHT);
 		this.setBounds(OFFSET_WIDTH, OFFSET_HEIGHT, PANEL_WIDTH+OFFSET_WIDTH, PANEL_HEIGHT+OFFSET_HEIGHT);
+		this.setLayout(null);
 		//this.setBackground(Color.BLACK);
 		//this.setVisible(true);
 		this.setFocusable(true);
@@ -152,11 +154,13 @@ public class GameFrame extends JPanel{
 		this.set_map(map);
 		this.myTank = map.myTank;
 		game_state = State.GAME;
+		this.removeAll();
 	}
 	
 	public void switch2editer(MapEditer editer) {
 		this.requestFocusInWindow();
 		this.set_editer(editer);
 		game_state = State.EDIT;
+		editer.active(this);
 	}
 }

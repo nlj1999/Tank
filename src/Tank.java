@@ -3,10 +3,13 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Random;
+
+import javax.swing.Icon;
+
 import java.lang.Math;
 
 /* 坦克 */
-public class Tank {
+public class Tank extends MapItem{
 	/* 当前位置 */
 	public int x, y;
 	/* 上次位置 */
@@ -52,6 +55,9 @@ public class Tank {
 		this(x, y, enemy, color);
 		this.dir = dir;
 		this.map = map;
+		if(dir != Direction.STOP) {
+			this.p_dir = dir;
+		}
 	}
 	
 	public int get_life() {
@@ -76,6 +82,14 @@ public class Tank {
 	
 	public void set_live(boolean live) {
 		this.live = live;
+	}
+	
+	public void set_x(int x) {
+		this.x = x;
+	}
+	
+	public void set_y(int y) {
+		this.y = y;
 	}
 	
 	/* 获取中点 */
@@ -121,7 +135,7 @@ public class Tank {
 		/* 画炮筒 */
 		int tank_center_x = get_center_x();
 		int tank_center_y = get_center_y();
-		int p_length = Tank.width;
+		int p_length = Tank.width/2;
 		int p_length_sqrt = (int)(Double.valueOf(p_length)*Math.sqrt(0.5));
 		
 		/* 驾驶室，圆形*/
@@ -162,6 +176,8 @@ public class Tank {
 			g2.drawLine(tank_center_x, tank_center_y, tank_center_x, tank_center_y);
 			break;
 		}
+		
+		g2.setStroke(new BasicStroke(1.0f));
 		
 	}
 	
@@ -363,6 +379,26 @@ public class Tank {
 			return true;
 		}
 		return false;
+	}
+	
+	public class ObjectIcon implements Icon {
+		
+		 @Override
+		 public void paintIcon(Component c, Graphics g, int x, int y) {
+			 Tank.this.set_x(x);
+			 Tank.this.set_y(y);
+			 Tank.this.draw(g);
+		 }
+
+		 @Override
+		 public int getIconWidth() {
+			 return Tank.width;
+		 }
+
+		 @Override
+		 public int getIconHeight() {
+			 return Tank.height;
+		 }
 	}
 	
 }
