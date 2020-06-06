@@ -33,15 +33,13 @@ public class GameFrame extends JPanel{
 	MapEditer editer = null;
 	enum State {GAME, EDIT};
 	State game_state = State.GAME;
+	TankClient tc = null;
 	
-	public void launchFrame() {
+	public void launchFrame(TankClient tc) {
+        this.tc = tc;
         
-		//this.setLocation(100, 200);
-		//this.setSize(PANEL_WIDTH,PANEL_HEIGHT);
 		this.setBounds(OFFSET_WIDTH, OFFSET_HEIGHT, PANEL_WIDTH+OFFSET_WIDTH, PANEL_HEIGHT+OFFSET_HEIGHT);
 		this.setLayout(null);
-		//this.setBackground(Color.BLACK);
-		//this.setVisible(true);
 		this.setFocusable(true);
 		new Thread(new PaintThread()).start();
 		this.addKeyListener(new KeyMoniton());
@@ -61,8 +59,9 @@ public class GameFrame extends JPanel{
 			/* 画图 */
 			map.draw(g);
 			/* 提示信息 */
-			g.drawString("移动: 方向键", 650, 20);
-			g.drawString("开火: 空格键", 650, 40);
+			g.setFont(new Font("楷体", Font.BOLD, 20));
+			g.drawString("移动: 方向键", 620, 20);
+			g.drawString("开火: 空格键", 620, 60);
 		}
 		/* 编辑模式 */
 		else if(game_state == State.EDIT) {
@@ -162,5 +161,13 @@ public class GameFrame extends JPanel{
 		this.set_editer(editer);
 		game_state = State.EDIT;
 		editer.active(this);
+	}
+	
+	public boolean GameMode() {
+		return game_state == State.GAME;
+	}
+	
+	public boolean EditMode() {
+		return game_state == State.EDIT;
 	}
 }

@@ -49,6 +49,8 @@ public class Tank extends MapItem{
 		this.y = y;
 		this.color = color;
 		this.enemy = enemy;
+		this.last_x = x;
+		this.last_y = y;
 	}
 	
 	public Tank(int x, int y, boolean enemy, Color color, Direction dir, Map map) {

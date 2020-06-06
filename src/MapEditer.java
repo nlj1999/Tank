@@ -1,13 +1,16 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.*;
 import java.util.*;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 
@@ -33,11 +36,14 @@ public class MapEditer {
 		choose_y = -1;
 	}
 	
+	public void loadMap(String mapStr) {
+		gen = new MapProducer(mapStr);
+		mapUpdate();
+	}
+	
 	public void mapUpdate() {
 		map = gen.produce();
 	}
-	
-	
 	
 	public void draw(Graphics g) {
 		map.draw(g);
@@ -120,11 +126,22 @@ public class MapEditer {
 	}
 	
 	public void active(GameFrame gf) {
+		choose_x = choose_y = -1;
+		
 		MyTankButton mytankButton = new MyTankButton();
 		EnemyTankButton enemytankButton = new EnemyTankButton();
-		
+		WallButton wallButton = new WallButton();
+		RecoveryButton recoveryButton = new RecoveryButton();
+		ActiveButton activeButton = new ActiveButton(gf);
+		ClearButton clearButton = new ClearButton();
+		SaveButton saveButton = new SaveButton();
 		gf.add(mytankButton);
 		gf.add(enemytankButton);
+		gf.add(wallButton);
+		gf.add(recoveryButton);
+		gf.add(activeButton);
+		gf.add(clearButton);
+		gf.add(saveButton);
 		gf.validate();
 	}
 	
@@ -140,12 +157,15 @@ public class MapEditer {
 			Tank.ObjectIcon icon = new Tank(0, 0, false, Color.red, Tank.Direction.L, map).new ObjectIcon();
 			this.setText("我方坦克");
 			this.setIcon(icon);
-			this.setBounds(650, 0, 90, 70);
+			this.setBounds(600, 0, 90, 70);
+			this.setPreferredSize(new Dimension(90,70));
 			this.addActionListener(new ActionListener() {
 	        	public void actionPerformed(ActionEvent e) {
 	        		get_choice();
-	        		gen.deleteMyTank();
-	        		gen.grid[grid_x.get(0)/30][grid_y.get(0)/30] = 1;
+	        		if(grid_x.size() > 0) {
+	        			gen.deleteMyTank();
+	        			gen.grid[grid_x.get(0)/30][grid_y.get(0)/30] = 1;
+	        		}
 	        		mapUpdate();
 	        	}
 	        });
@@ -157,7 +177,7 @@ public class MapEditer {
 			Tank.ObjectIcon icon = new Tank(0, 0, true, Color.blue, Tank.Direction.L, map).new ObjectIcon();
 			this.setText("敌方坦克");
 			this.setIcon(icon);
-			this.setBounds(650, 70, 90, 70);
+			this.setBounds(690, 0, 90, 70);
 			this.addActionListener(new ActionListener() {
 	        	public void actionPerformed(ActionEvent e) {
 	        		get_choice();
@@ -170,6 +190,100 @@ public class MapEditer {
 		}
 	}
 	
+	public class WallButton extends MapItemButton{
+		WallButton(){
+			Wall.ObjectIcon icon = new Wall(0, 0, 30, 30).new ObjectIcon();
+			this.setText("墙");
+			this.setIcon(icon);
+			this.setBounds(600, 70, 90, 70);
+			this.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		get_choice();
+	        		for(int i = 0; i < grid_x.size(); i++) {
+	        			gen.grid[grid_x.get(i)/30][grid_y.get(i)/30] = 3;
+	        		}
+	        		mapUpdate();
+	        	}
+	        });
+		}
+	}
+	
+	public class RecoveryButton extends MapItemButton{
+		RecoveryButton(){
+			Recovery.ObjectIcon icon = new Recovery().new ObjectIcon();
+			this.setText("补给包");
+			this.setIcon(icon);
+			this.setBounds(690, 70, 90, 70);
+			this.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		get_choice();
+	        		for(int i = 0; i < grid_x.size(); i++) {
+	        			gen.grid[grid_x.get(i)/30][grid_y.get(i)/30] = 4;
+	        		}
+	        		mapUpdate();
+	        	}
+	        });
+		}
+	}
+	
+	public class ClearButton extends MapItemButton{
+		ClearButton(){
+			this.setText("清空地图");
+			this.setBounds(650, 490, 90, 40);
+			this.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		gen.clear();
+	        		mapUpdate();
+	        	}
+	        });
+		}
+	}
+
+	public class ActiveButton extends MapItemButton{
+		GameFrame gf=null;
+		ActiveButton(GameFrame gf){
+			this.gf = gf;
+			this.setText("启用地图");
+			this.setBounds(650, 450, 90, 40);
+			this.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		gf.tc.init_map.copy(gen);
+	        	}
+	        });
+		}
+	}
+	
+	public class SaveButton extends MapItemButton{
+		SaveButton(){
+			this.setText("保存地图");
+			this.setBounds(650, 530, 90, 40);
+			this.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		String mapName = (String)JOptionPane.showInputDialog(null,"请输入地图名：\n","保存地图",JOptionPane.PLAIN_MESSAGE,null,null,"我的地图"); 
+	        		if(mapName == null || mapName.equals("")) {
+	        			return;
+	        		}
+	        		File file = new File("savedMap/"+ mapName + ".txt");
+	        		BufferedWriter writer = null;
+	        		try {
+	                    writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file,false), "UTF-8"));
+	                    writer.write(gen.getString());
+	                } catch (IOException e1) {
+	                    e1.printStackTrace();
+	                }finally {
+	                    try {
+	                        if(writer != null){
+	                            writer.close();
+	                        }
+	                    } catch (IOException e1) {
+	                        e1.printStackTrace();
+	                    }
+	                }
+	               System.out.println("文件写入成功！");
+	        	}
+	        });
+		}
+	}
 	
 	
 }

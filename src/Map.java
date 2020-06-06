@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.*;
 
@@ -92,7 +93,8 @@ public class Map {
 			}
 		}
 		for(Recovery r: recovers) {
-			myTank.recovery(r);
+			if(myTank != null)
+				myTank.recovery(r);
 		}
 		for(Missile m: missiles) {
 			m.move();
@@ -129,10 +131,14 @@ public class Map {
 		for(int i = 0; i < explode.size(); i++) {
 			explode.get(i).draw(g);
 		}
-		
+		if(myTank != null && myTank.is_live() && tanks.size() == 1) {
+			win(g);
+		}
 		
 	}
 	
-	
-	
+	public void win(Graphics g) {
+		g.setFont(new Font("Times New Roman", Font.BOLD, 100));
+		g.drawString("YOU WIN", 80, 300);
+	}
 }

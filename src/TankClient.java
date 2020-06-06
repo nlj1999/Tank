@@ -3,6 +3,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,12 +80,53 @@ public class TankClient extends JFrame{
         	}
         });
         
+        buttonLoad.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		String basePath="savedMap/";
+        		String[] files=new File(basePath).list();
+        		String filePath = (String) JOptionPane.showInputDialog(
+        				null,"请选择一个地图:\n", "加载地图", 
+        				JOptionPane.PLAIN_MESSAGE, null, files, "");
+        		if(filePath == null || filePath.equals("")) {
+        			return;
+        		}
+        		filePath = "savedMap/"+filePath;
+        		BufferedReader reader = null;
+        		String laststr = "";
+        		try {
+        			FileInputStream fileInputStream = new FileInputStream(filePath);
+        			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+        			reader = new BufferedReader(inputStreamReader);
+        			String tempString = null;
+        			while ((tempString = reader.readLine()) != null) {
+        				laststr += tempString;
+        			}
+        			reader.close();
+        		} catch (IOException e1) {
+        			e1.printStackTrace();
+        		} finally {
+        			if (reader != null) {
+        				try {
+        					reader.close();
+        				} catch (IOException e1) {
+        					e1.printStackTrace();
+        				}
+        			}
+        		}
+        		if(gf.GameMode()) {
+        			init_map = new MapProducer(laststr);
+        			newGame.doClick();
+        		}
+        		else if(gf.EditMode()) {
+        			editer.loadMap(laststr);
+        		}
+        	}
+        });
+        
         menuBar.add(newGame);
         menuBar.add(buttonGame);
         menuBar.add(buttonEdit);
         menuBar.add(buttonLoad);
-		gf.launchFrame();
+		gf.launchFrame(this);
 	}
-
-
 }

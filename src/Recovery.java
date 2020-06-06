@@ -1,7 +1,10 @@
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.Random;
+
+import javax.swing.Icon;
 
 /* Ñª°ü */
 public class Recovery {
@@ -36,7 +39,7 @@ public class Recovery {
 			return;
 		Color c = g.getColor();
 		g.setColor(Color.magenta);
-		g.fillOval(x, y, w, h);
+		g.fillOval(x+(MapItem.w-w)/2, y+(MapItem.h-h)/2, w, h);
 		g.setColor(c);
 	}
 	
@@ -51,6 +54,26 @@ public class Recovery {
 	
 	public Rectangle get_rect() {
 		return new Rectangle(x, y, w, h);
+	}
+	
+	public class ObjectIcon implements Icon {
+		
+		 @Override
+		 public void paintIcon(Component c, Graphics g, int x, int y) {
+			 Recovery.this.x = x;
+			 Recovery.this.y = y;
+			 Recovery.this.draw(g);
+		 }
+
+		 @Override
+		 public int getIconWidth() {
+			 return MapItem.w;
+		 }
+
+		 @Override
+		 public int getIconHeight() {
+			 return MapItem.h;
+		 }
 	}
 	
 }
