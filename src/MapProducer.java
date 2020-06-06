@@ -37,6 +37,12 @@ public class MapProducer {
 					case 4:
 						result.add_recovery(x, y);
 						break;
+					case 5:
+						result.add_speeder(x,y);
+						break;
+					case 6:
+						result.add_grass(x,y);
+						break;
 				}
 			}
 		return result;

@@ -22,6 +22,10 @@ public class Map {
 	List<Missile> missiles = new ArrayList<Missile>();
 	/* 爆炸 */
 	List<Explode> explode = new ArrayList<Explode>();
+	/* 加速器 */
+	List<Speeder> speeders = new ArrayList<Speeder>();
+	/* 草丛  */
+	List<Grass> grasses = new ArrayList<Grass>();
 	
 	
 	public Map(){
@@ -83,6 +87,28 @@ public class Map {
 		this.recovers.add(recovery);
 	}
 	
+	/* 添加加速器 */
+	public void add_speeder() {
+		Speeder speeder= new Speeder();
+		this.speeders.add(speeder);
+	}
+	
+	public void add_speeder(int x,int y) {
+		Speeder speeder= new Speeder(x,y);
+		this.speeders.add(speeder);
+	}
+	
+	/* 添加加速器 */
+	public void add_grass() {
+		Grass grass= new Grass();
+		this.grasses.add(grass);
+	}
+	
+	public void add_grass(int x,int y) {
+		Grass grass= new Grass(x,y);
+		this.grasses.add(grass);
+	}
+	
 	/* 处理事件 */
 	public void process() {
 		for(Tank t: tanks) {
@@ -95,6 +121,16 @@ public class Map {
 		for(Recovery r: recovers) {
 			if(myTank != null)
 				myTank.recovery(r);
+		}
+		for(Speeder s: speeders) {
+			if(myTank != null)
+				myTank.speeder(s);
+		}
+		
+		for(Grass gr: grasses) {
+			if(myTank != null)
+				myTank.grass(gr);
+					
 		}
 		for(Missile m: missiles) {
 			m.move();
@@ -130,6 +166,12 @@ public class Map {
 		}
 		for(int i = 0; i < explode.size(); i++) {
 			explode.get(i).draw(g);
+		}
+		for(int i = 0; i < speeders.size(); i++) {
+			speeders.get(i).draw(g);
+		}
+		for(int i = 0; i < grasses.size(); i++) {
+			grasses.get(i).draw(g);
 		}
 		
 	}

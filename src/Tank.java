@@ -32,6 +32,9 @@ public class Tank extends MapItem{
 	private Direction dir = Direction.STOP;
 	/* 炮筒方向 */
 	private Direction p_dir = Direction.D;
+	/* 在草丛中 */
+	private boolean inGrass = false;
+	
 	
 	private boolean enemy;
 	private boolean live = true;
@@ -68,6 +71,16 @@ public class Tank extends MapItem{
 	
 	public void set_life(int Life) {
 		this.life = Life;
+	}
+	
+	public void add_speed(int Speed) {
+		this.speed_x += Speed;
+		this.speed_y += Speed;
+	}
+	
+	public void set_speed(int Speed) {
+		this.speed_x = Speed;
+		this.speed_y = Speed;
 	}
 	
 	public boolean is_enemy() {
@@ -249,34 +262,44 @@ public class Tank extends MapItem{
 	void move() {
 		last_x = x;
 		last_y = y;
+		int tspeed_x,tspeed_y;
+		if(inGrass) {
+			tspeed_x=3;
+			tspeed_y=3;
+			inGrass=false;
+		}
+		else {
+			tspeed_x=speed_x;
+			tspeed_y=speed_y;
+		}
 		switch(dir) {
 		case L:
-			x-=speed_x;
+			x-=tspeed_x;
 			break;
 		case LU:
-			x-=speed_x;
-			y-=speed_y;
+			x-=tspeed_x;
+			y-=tspeed_y;
 			break;
 		case U:
-			y-=speed_y;
+			y-=tspeed_y;
 			break;
 		case RU:
-			x+=speed_x;
-			y-=speed_y;
+			x+=tspeed_x;
+			y-=tspeed_y;
 			break;
 		case R:
-			x+=speed_x;
+			x+=tspeed_x;
 			break;
 		case RD:
-			x+=speed_x;
-			y+=speed_y;
+			x+=tspeed_x;
+			y+=tspeed_y;
 			break;
 		case D:
-			y+=speed_y;
+			y+=tspeed_y;
 			break;
 		case LD:
-			x-=speed_x;
-			y+=speed_y;
+			x-=tspeed_x;
+			y+=tspeed_y;
 			break;
 		case STOP:
 			break;
@@ -378,6 +401,25 @@ public class Tank extends MapItem{
 		if(this.live&&r.is_live()&&this.get_rect().intersects(r.get_rect())){
 			this.set_life(100);
 			r.set_live(false);
+			return true;
+		}
+		return false;
+	}
+	
+	/* 吃加速器加速 */
+	public boolean speeder(Speeder s) {
+		if(this.live&&s.is_live()&&this.get_rect().intersects(s.get_rect())){
+			this.add_speed(5);
+			s.set_live(false);
+			return true;
+		}
+		return false;
+	}
+	
+	/* 草丛中减速 */
+	public boolean grass(Grass gr) {
+		if(this.live&&gr.is_live()&&this.get_rect().intersects(gr.get_rect())){
+			inGrass=true;
 			return true;
 		}
 		return false;

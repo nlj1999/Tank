@@ -31,6 +31,7 @@ public class Explode {
 		/* fillOval是画矩形的内接椭圆，需要计算中心以画出中心膨胀的效果 */
 		g.fillOval(x-r/2, y-r/2, r, r);
 		
+		
 		g.setColor(c);
 		step++;
 	}

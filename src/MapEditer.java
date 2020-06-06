@@ -132,6 +132,8 @@ public class MapEditer {
 		EnemyTankButton enemytankButton = new EnemyTankButton();
 		WallButton wallButton = new WallButton();
 		RecoveryButton recoveryButton = new RecoveryButton();
+		SpeederButton speederButton = new SpeederButton();
+		GrassButton grassButton = new GrassButton();
 		RemoveButton removeButton = new RemoveButton();
 		ActiveButton activeButton = new ActiveButton(gf);
 		ClearButton clearButton = new ClearButton();
@@ -140,6 +142,8 @@ public class MapEditer {
 		gf.add(enemytankButton);
 		gf.add(wallButton);
 		gf.add(recoveryButton);
+		gf.add(speederButton);
+		gf.add(grassButton);
 		gf.add(removeButton);
 		gf.add(activeButton);
 		gf.add(clearButton);
@@ -237,6 +241,42 @@ public class MapEditer {
 	        		get_choice();
 	        		for(int i = 0; i < grid_x.size(); i++) {
 	        			gen.grid[grid_x.get(i)/30][grid_y.get(i)/30] = 4;
+	        		}
+	        		mapUpdate();
+	        	}
+	        });
+		}
+	}
+	
+	public class SpeederButton extends MapItemButton{
+		SpeederButton(){
+			Speeder.ObjectIcon icon = new Speeder().new ObjectIcon();
+			this.setText("¼ÓËÙÆ÷");
+			this.setIcon(icon);
+			this.setBounds(600, 140, 90, 70);
+			this.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		get_choice();
+	        		for(int i = 0; i < grid_x.size(); i++) {
+	        			gen.grid[grid_x.get(i)/30][grid_y.get(i)/30] = 5;
+	        		}
+	        		mapUpdate();
+	        	}
+	        });
+		}
+	}
+	
+	public class GrassButton extends MapItemButton{
+		GrassButton(){
+			Grass.ObjectIcon icon = new Grass().new ObjectIcon();
+			this.setText("²Ý´Ô");
+			this.setIcon(icon);
+			this.setBounds(690, 140, 90, 70);
+			this.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		get_choice();
+	        		for(int i = 0; i < grid_x.size(); i++) {
+	        			gen.grid[grid_x.get(i)/30][grid_y.get(i)/30] = 6;
 	        		}
 	        		mapUpdate();
 	        	}
