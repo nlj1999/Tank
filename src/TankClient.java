@@ -33,16 +33,13 @@ public class TankClient extends JFrame{
 		init_map = new DefaultMap();
 		map = init_map.produce();
 		editer = new MapEditer();
-		gf.switch2game(map);
 		
 		this.setLayout(null);
 		this.setLocation(400,100);
 		this.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
 		this.setResizable(false);
 		this.setTitle("Tank");
-		//this.setBackground(Color.BLACK);
 		this.setVisible(true);
-		//this.setFocusable(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		this.add(gf);
@@ -127,6 +124,8 @@ public class TankClient extends JFrame{
         menuBar.add(buttonGame);
         menuBar.add(buttonEdit);
         menuBar.add(buttonLoad);
+        this.validate();
 		gf.launchFrame(this);
+		gf.switch2game(map);
 	}
 }

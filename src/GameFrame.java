@@ -37,7 +37,6 @@ public class GameFrame extends JPanel{
 	
 	public void launchFrame(TankClient tc) {
         this.tc = tc;
-        
 		this.setBounds(OFFSET_WIDTH, OFFSET_HEIGHT, PANEL_WIDTH+OFFSET_WIDTH, PANEL_HEIGHT+OFFSET_HEIGHT);
 		this.setLayout(null);
 		this.setFocusable(true);

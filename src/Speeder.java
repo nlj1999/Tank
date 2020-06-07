@@ -9,7 +9,6 @@ import java.util.Random;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import com.sun.javafx.tk.Toolkit;
 
 /* ¼ÓËÙÆ÷ */
 public class Speeder {
